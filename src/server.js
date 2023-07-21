@@ -11,6 +11,17 @@ app.use(cors());
 // 解析请求体
 app.use(bodyParser.json());
 
+// 记录请求日志的中间件
+app.use((req, res, next) => {
+  console.log(
+    `[${new Date().toLocaleString()}] ${req.headers.origin} ${req.method} ${
+      req.url
+    }`
+  );
+
+  next();
+});
+
 // 创建MySQL数据库连接
 const db = mysql.createConnection({
   host: "192.168.0.173",
@@ -30,8 +41,22 @@ db.connect((err) => {
 });
 
 // 创建一个简单的API路由，用于从数据库中获取表数据
-app.get("/api/data", (req, res) => {
-  const sql = "SELECT * FROM system"; // 将"your_table_name"替换为你的表名
+// app.get("/api/data", (req, res) => {
+//   const sql = "SELECT * FROM system";
+
+//   db.query(sql, (err, result) => {
+//     if (err) {
+//       console.error("查询数据库错误：", err);
+//       res.status(500).json({ error: "数据库查询错误" });
+//     } else {
+//       res.json(result);
+//     }
+//   });
+// });
+
+// post
+app.post("/api/getSystemData", (req, res) => {
+  const sql = "SELECT * FROM system";
 
   db.query(sql, (err, result) => {
     if (err) {

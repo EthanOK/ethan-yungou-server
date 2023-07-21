@@ -40,7 +40,7 @@ db.connect((err) => {
   }
 });
 
-// 创建一个简单的API路由，用于从数据库中获取表数据
+// get
 // app.get("/api/data", (req, res) => {
 //   const sql = "SELECT * FROM system";
 

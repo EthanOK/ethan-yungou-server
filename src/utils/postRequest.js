@@ -4,25 +4,37 @@ const {
   insertDataOfMysql_OP,
 } = require("./accessDB");
 
-const { generateToken } = require("./generateToken");
+const { generateToken, verifyToken } = require("./generateToken");
 
 const postReq = async (app) => {
   try {
     app.post("/api/getSystemData", async (req, res) => {
-      const requestData = req.body;
-      console.log(requestData);
-      const sql = "SELECT * FROM system";
+      const userToken = req.headers["user-token"];
 
-      let result = await getDataOfMysql_OP(sql);
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          const sql = "SELECT * FROM system";
+
+          let data = await getDataOfMysql_OP(sql);
+          result = { code: 200, data: data };
+        }
+      }
+
       res.json(result);
     });
 
     app.post("/api/login", async (req, res) => {
       const requestData = req.body;
-      console.log(requestData);
 
       let userToken = generateToken(requestData);
-      console.log(userToken);
 
       //   const sql = "SELECT * FROM system";
       //   await insertDataOfMysql_OP(sql);

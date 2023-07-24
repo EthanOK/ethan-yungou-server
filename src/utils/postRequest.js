@@ -5,6 +5,7 @@ const {
 } = require("./accessDB");
 
 const { generateToken, verifyToken } = require("./generateToken");
+const { verifyLoginSignature } = require("./verifySignature");
 
 const postReq = async (app) => {
   try {
@@ -32,13 +33,20 @@ const postReq = async (app) => {
     });
 
     app.post("/api/login", async (req, res) => {
+      let result;
       const requestData = req.body;
 
-      let userToken = generateToken(requestData);
+      let result_verify = await verifyLoginSignature(requestData);
+      if (!result_verify) {
+        result = { code: -444, message: "Invalid signature" };
+      } else {
+        let userToken = generateToken(requestData);
 
-      //   const sql = "SELECT * FROM system";
-      //   await insertDataOfMysql_OP(sql);
-      let result = { userToken: userToken };
+        //   const sql = "SELECT * FROM system";
+        //   await insertDataOfMysql_OP(sql);
+        let data = { userToken: userToken };
+        result = { code: 200, data: data };
+      }
 
       res.json(result);
     });

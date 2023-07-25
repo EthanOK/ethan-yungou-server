@@ -1,20 +1,17 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
-
-const secretKey = process.env.JWT_SECRET_KEY;
+const { EXPIRES_TIME, SECRETKEY } = require("../systemConfig");
 
 const generateToken = (requestData) => {
-  const expiresIn = process.env.EXPIRES_TIME;
   // 生成 Token
-  const token = jwt.sign(requestData, secretKey, { expiresIn });
+  const token = jwt.sign(requestData, SECRETKEY, { expiresIn: EXPIRES_TIME });
   return token;
 };
 
 const verifyToken = (userToken) => {
   try {
-    const decoded = jwt.verify(userToken, secretKey);
-    console.log(decoded);
-    return [decoded.userAddress, "vreify success"];
+    const decoded = jwt.verify(userToken, SECRETKEY);
+    // console.log(decoded);
+    return [decoded.message.userAddress, "vreify success"];
   } catch (err) {
     return [null, err.message];
   }

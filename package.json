@@ -17,6 +17,8 @@
     "ethers": "^6.6.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "nftscan-api": "^1.8.1",
+    "opensea-js": "^6.1.4"
   }
 }

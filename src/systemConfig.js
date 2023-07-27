@@ -9,7 +9,7 @@ const ANKR_BSC_RPC = process.env.ANKR_BSC_RPC;
 const ANKR_TBSC_RPC = process.env.ANKR_TBSC_RPC;
 const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 const NFTSCAN_API_KEY = process.env.NFTSCAN_API_KEY;
-const chainIds_testnet = [5, 97, 11155111];
+const chainIds_testnet = ["5", "97", "11155111"];
 
 module.exports = {
   EXPIRES_TIME,

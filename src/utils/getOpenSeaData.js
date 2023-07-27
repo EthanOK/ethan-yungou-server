@@ -25,21 +25,21 @@ const getOpenseaSDK = async (chainId) => {
   const rpc = getRpc(chainId);
   const provider = new ethers.JsonRpcProvider(rpc);
   let openseaSDK;
-  if (chainId == 1) {
+  if (chainId == "1") {
     openseaSDK = new OpenSeaSDK(provider, {
       chain: Chain.Mainnet,
       apiKey: OPENSEA_API_KEY,
     });
-  } else if (chainId == 56) {
+  } else if (chainId == "56") {
     openseaSDK = new OpenSeaSDK(provider, {
       chain: Chain.BNB,
       apiKey: OPENSEA_API_KEY,
     });
-  } else if (chainId == 5) {
+  } else if (chainId == "5") {
     openseaSDK = new OpenSeaSDK(provider, {
       chain: Chain.Goerli,
     });
-  } else if (chainId == 97) {
+  } else if (chainId == "97") {
     openseaSDK = new OpenSeaSDK(provider, {
       chain: Chain.BNBTestnet,
     });
@@ -47,7 +47,12 @@ const getOpenseaSDK = async (chainId) => {
   return openseaSDK;
 };
 
-const getSignature = async (chainId, tokenAddress, tokenId) => {
+const getSignature = async (
+  fulfillerAddress,
+  chainId,
+  tokenAddress,
+  tokenId
+) => {
   try {
     let openseaSDK = await getOpenseaSDK(chainId);
     const order = await openseaSDK.api.getOrder({
@@ -64,7 +69,7 @@ const getSignature = async (chainId, tokenAddress, tokenId) => {
       await waitOneSecond();
     }
     const fulfillment = await openseaSDK.api.generateFulfillmentData(
-      ZeroAddress,
+      fulfillerAddress,
       order.orderHash,
       order.protocolAddress,
       order.side
@@ -77,10 +82,11 @@ const getSignature = async (chainId, tokenAddress, tokenId) => {
 
     return { orderHash: orderHash, signature: signature };
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return { orderHash: null, signature: null };
   }
 };
+
 module.exports = {
   getOrder,
   getSignature,

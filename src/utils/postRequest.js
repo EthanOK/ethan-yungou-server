@@ -7,6 +7,7 @@ const {
 const { generateToken, verifyToken } = require("./generateToken");
 const { verifyLoginSignature } = require("./verifySignature");
 const { getSignature } = require("./getOpenSeaData");
+const { getAddressOfENS, getENSOfAddress } = require("./getENSData");
 
 const postReq = async (app) => {
   try {
@@ -66,12 +67,63 @@ const postReq = async (app) => {
           result = { code: -400, message: message };
         } else {
           let data = await getSignature(
+            userAddress,
             requestData.chainId,
             requestData.tokenAddress,
             requestData.tokenId
           );
           if (data.orderHash == null) {
             result = { code: -402, message: "Invalid Order" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
+
+      res.json(result);
+    });
+
+    app.post("/api/getENSOfAddress", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getENSOfAddress(requestData.address);
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
+
+      res.json(result);
+    });
+    // getAddressOfENS
+    app.post("/api/getAddressOfENS", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getAddressOfENS(requestData.ens);
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
           } else {
             result = { code: 200, data: data };
           }

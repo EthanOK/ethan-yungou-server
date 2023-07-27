@@ -1,8 +1,6 @@
 const express = require("express");
-const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { getDataOfMysql, getDataOfMysql_OP } = require("./utils/accessDB");
 
 const { postReq } = require("./utils/postRequest");
 const app = express();

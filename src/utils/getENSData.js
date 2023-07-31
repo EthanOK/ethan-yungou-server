@@ -1,8 +1,10 @@
-const { ethers } = require("ethers");
+const { ethers, getAddress, namehash, dnsEncode, Contract } = require("ethers");
 const axios = require("axios");
 const { INFURA_MAIN_RPC, KNN3_API_KEY } = require("../systemConfig");
 
 const { setAuthKey, getAddr, holdNfts, getAddrList } = require("knn3-sdk");
+const { log } = require("console");
+const { json } = require("stream/consumers");
 setAuthKey(KNN3_API_KEY);
 const provider = new ethers.JsonRpcProvider(INFURA_MAIN_RPC);
 
@@ -107,9 +109,10 @@ async function getAddressOfENSTheGraph(ens) {
   }
 }
 
+// 有问题会查询账户下所有的ens
 async function getENSByTokenIdTheGraph(tokenId) {
   const labelHash = BigInt(tokenId).toString(16);
-  if (labelHash.length != 64) return false;
+  // if (labelHash.length != 64) return false;
   // console.log(labelHash);
   try {
     const query = `query{
@@ -128,7 +131,7 @@ async function getENSByTokenIdTheGraph(tokenId) {
         return null;
       }
       let name = domains[0].labelName + ".eth";
-      console.log(name);
+      // console.log(name);
       return name;
     }
     return false;
@@ -147,12 +150,35 @@ async function getNftList(address, network) {
   console.log(JSON.stringify(nftList));
   console.log(nftList.list.length);
 }
+
+async function getENSOfAddressByContract(address) {
+  try {
+    address = getAddress(address);
+    const dnsName = address.substring(2).toLowerCase() + ".addr.reverse";
+    const reverseName = dnsEncode(dnsName);
+
+    const universalResolver = new Contract(
+      "0xc0497E381f536Be9ce14B0dD3817cBcAe57d2F62",
+      [
+        "function reverse(bytes reverseName) view returns (string, address, address, address)",
+      ],
+      provider
+    );
+
+    const result = await universalResolver.reverse(reverseName);
+
+    return result[0];
+  } catch (error) {
+    return null;
+  }
+}
 module.exports = {
   getAddressOfENS,
   getENSOfAddress,
   getENSOfAddressTheGraph,
   getAddressOfENSTheGraph,
   getENSByTokenIdTheGraph,
+  getENSOfAddressByContract,
 };
 
 // getAddressInfo("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b");
@@ -162,3 +188,5 @@ module.exports = {
 // getENSByTokenIdTheGraph(
 //   "7315564503871311976272839400035544870733041980623205899485940238463606699374"
 // );
+
+// reverseName：b6E040C9ECAaE172a89bD561c5F73e1C48d28cd9.addr.reverse

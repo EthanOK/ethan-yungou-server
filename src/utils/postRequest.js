@@ -13,6 +13,7 @@ const {
   getENSOfAddressTheGraph,
   getAddressOfENSTheGraph,
   getENSByTokenIdTheGraph,
+  getENSOfAddressByContract,
 } = require("./getENSData");
 
 const postReq = async (app) => {
@@ -220,6 +221,29 @@ const postReq = async (app) => {
           }
         }
       }
+      res.json(result);
+    });
+
+    // getENSOfAddressByContract
+
+    app.post("/api/getENSOfAddressByContract", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getENSOfAddressByContract(requestData.address);
+          result = { code: 200, data: data };
+        }
+      }
+
       res.json(result);
     });
   } catch (error) {

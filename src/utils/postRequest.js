@@ -11,6 +11,8 @@ const {
   getAddressOfENS,
   getENSOfAddress,
   getENSOfAddressTheGraph,
+  getAddressOfENSTheGraph,
+  getENSByTokenIdTheGraph,
 } = require("./getENSData");
 
 const postReq = async (app) => {
@@ -136,6 +138,7 @@ const postReq = async (app) => {
 
       res.json(result);
     });
+
     // getENSOfAddressTheGraph
     app.post("/api/getENSOfAddressTheGraph", async (req, res) => {
       const userToken = req.headers["user-token"];
@@ -166,6 +169,57 @@ const postReq = async (app) => {
         }
       }
 
+      res.json(result);
+    });
+
+    // getAddressOfENSTheGraph
+    app.post("/api/getAddressOfENSTheGraph", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getAddressOfENSTheGraph(requestData.ens);
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
+
+      res.json(result);
+    });
+
+    // getENSByTokenIdTheGraph
+    app.post("/api/getENSByTokenIdTheGraph", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getENSByTokenIdTheGraph(requestData.tokenId);
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
       res.json(result);
     });
   } catch (error) {

@@ -10,11 +10,7 @@ async function getAddressOfENS(ens) {
   try {
     const provider = new ethers.JsonRpcProvider(INFURA_MAIN_RPC);
     const address = await provider.resolveName(ens);
-    // 0xA508c16666C5B8981Fa46Eb32784Fccc01942A71
-    ens = await provider.lookupAddress(
-      "0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b"
-    );
-    console.log(ens);
+
     if (address == null) {
       return null;
     } else {
@@ -36,7 +32,7 @@ async function getENSOfAddress(address) {
       return ens;
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return false;
   }
 }
@@ -76,6 +72,72 @@ async function getENSOfAddressTheGraph(address) {
   }
 }
 
+async function getAddressOfENSTheGraph(ens) {
+  ens = ethers.ensNormalize(ens);
+  try {
+    const query = `{
+      domains(where: {name: "${ens}"}) {
+        id
+        name
+        labelName
+        labelhash
+        owner {
+          id
+        }
+      }
+    }
+    `;
+    const result = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
+      { query: query }
+    );
+    if (result.status == 200) {
+      let domains = result.data.data.domains;
+
+      if (domains.length == 0) {
+        return null;
+      }
+
+      return domains[0].owner.id;
+    }
+    return false;
+  } catch (error) {
+    // console.log(error);
+    return false;
+  }
+}
+
+async function getENSByTokenIdTheGraph(tokenId) {
+  const labelHash = BigInt(tokenId).toString(16);
+  if (labelHash.length != 64) return false;
+  // console.log(labelHash);
+  try {
+    const query = `query{
+      domains(first:1, where:{labelhash:"${labelHash}"}){
+        labelName
+      }
+    }`;
+    const result = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
+      { query: query }
+    );
+    if (result.status == 200) {
+      let domains = result.data.data.domains;
+
+      if (domains.length == 0) {
+        return null;
+      }
+      let name = domains[0].labelName + ".eth";
+      console.log(name);
+      return name;
+    }
+    return false;
+  } catch (error) {
+    // console.log(error);
+    return false;
+  }
+}
+
 async function getAddressInfo(address) {
   const info = await getAddr(address);
   console.log(info);
@@ -89,8 +151,14 @@ module.exports = {
   getAddressOfENS,
   getENSOfAddress,
   getENSOfAddressTheGraph,
+  getAddressOfENSTheGraph,
+  getENSByTokenIdTheGraph,
 };
 
 // getAddressInfo("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b");
 // getNftList("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b", "ethereum");
-getENSOfAddressTheGraph("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b");
+// getENSOfAddressTheGraph("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b");
+
+// getENSByTokenIdTheGraph(
+//   "7315564503871311976272839400035544870733041980623205899485940238463606699374"
+// );

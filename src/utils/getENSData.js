@@ -76,31 +76,30 @@ async function getENSOfAddressTheGraph(address) {
 
 async function getAddressOfENSTheGraph(ens) {
   ens = ethers.ensNormalize(ens);
+  const nameHash = namehash(ens);
+
   try {
-    const query = `{
-      domains(where: {name: "${ens}"}) {
-        id
-        name
-        labelName
-        labelhash
-        owner {
-          id
-        }
-      }
-    }
-    `;
     const result = await axios.post(
       "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
-      { query: query }
+      {
+        query:
+          "query getRecords($id: String!) {\n  domain(id: $id) {\n    name\n    isMigrated\n    createdAt\n    resolver {\n      texts\n      coinTypes\n      contentHash\n      addr {\n        id\n      }\n    }\n    id\n  }\n}",
+        variables: {
+          id: nameHash,
+        },
+        operationName: "getRecords",
+      }
     );
     if (result.status == 200) {
-      let domains = result.data.data.domains;
-
-      if (domains.length == 0) {
+      // console.log(result.data.data.domain);
+      if (result.data.data.domain == null) {
         return null;
       }
 
-      return domains[0].owner.id;
+      let resolver = result.data.data.domain.resolver;
+      // console.log(resolver);
+
+      return resolver.addr.id;
     }
     return false;
   } catch (error) {
@@ -141,6 +140,25 @@ async function getENSByTokenIdTheGraph(tokenId) {
   }
 }
 
+async function getENSByTokenId(tokenId) {
+  try {
+    const result = await axios.get(
+      `https://metadata.ens.domains/mainnet/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/${tokenId}`
+    );
+
+    if (result.status == 200) {
+      // console.log(result.data);
+      let name = result.data.name;
+      // console.log(name);
+      return name;
+    }
+    return null;
+  } catch (error) {
+    // console.log(error);
+    return null;
+  }
+}
+
 async function getAddressInfo(address) {
   const info = await getAddr(address);
   console.log(info);
@@ -172,6 +190,7 @@ async function getENSOfAddressByContract(address) {
     return null;
   }
 }
+
 module.exports = {
   getAddressOfENS,
   getENSOfAddress,
@@ -179,6 +198,7 @@ module.exports = {
   getAddressOfENSTheGraph,
   getENSByTokenIdTheGraph,
   getENSOfAddressByContract,
+  getENSByTokenId,
 };
 
 // getAddressInfo("0xDA482dDF91922e4ae66Fa1Aa82290E9B70a4693b");
@@ -190,3 +210,6 @@ module.exports = {
 // );
 
 // reverseName：b6E040C9ECAaE172a89bD561c5F73e1C48d28cd9.addr.reverse
+// getENSByTokenId(
+//   "7315564503871311976272839400035544870733041980623205899485940238463606699374"
+// );

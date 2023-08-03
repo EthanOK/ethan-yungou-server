@@ -17,6 +17,8 @@ const {
   getENSByTokenId,
 } = require("./getENSData");
 
+const { getBNBPriceUSDT, getETHPriceUSDT } = require("./getPriceBaseUSDT");
+
 const postReq = async (app) => {
   try {
     app.post("/api/getSystemData", async (req, res) => {
@@ -269,6 +271,16 @@ const postReq = async (app) => {
           result = { code: 200, data: data };
         }
       }
+
+      res.json(result);
+    });
+
+    app.post("/api/getPriceBaseUSDT", async (req, res) => {
+      let result;
+      let bnbPrice = await getBNBPriceUSDT();
+      let ethPrice = await getETHPriceUSDT();
+      let data = { bnbPrice: bnbPrice, ethPrice: ethPrice };
+      result = { code: 200, data: data };
 
       res.json(result);
     });

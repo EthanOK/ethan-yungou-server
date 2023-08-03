@@ -60,9 +60,12 @@ const getSignature = async (
       assetContractAddress: tokenAddress,
       tokenId: tokenId,
     });
+    // console.log(order);
+    const currentPrice = ethers.formatEther(order.currentPrice.toString());
+
     const orderHash = order.orderHash;
     if (orderHash == null) {
-      return { orderHash: null, signature: null };
+      return { currentPrice: null, orderHash: null, signature: null };
     }
 
     if (chainIds_testnet.includes(chainId)) {
@@ -77,13 +80,17 @@ const getSignature = async (
     const signature =
       fulfillment.fulfillment_data.transaction.input_data.parameters.signature;
     if (signature == null) {
-      return { orderHash: null, signature: null };
+      return { currentPrice: currentPrice, orderHash: null, signature: null };
     }
 
-    return { orderHash: orderHash, signature: signature };
+    return {
+      currentPrice: currentPrice,
+      orderHash: orderHash,
+      signature: signature,
+    };
   } catch (error) {
     console.log(error);
-    return { orderHash: null, signature: null };
+    return { currentPrice: null, orderHash: null, signature: null };
   }
 };
 

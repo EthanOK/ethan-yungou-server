@@ -51,12 +51,12 @@ const insertDataOfMysql_OP = async (statementSQL) => {
   const query = util.promisify(connection.query).bind(connection);
 
   try {
-    const results = await query(statementSQL);
+    const result = await query(statementSQL);
     connection.release();
-    return results;
+    return result.insertId;
   } catch (error) {
     console.error("MySQL错误:", error);
-    return [];
+    return null;
   }
 };
 

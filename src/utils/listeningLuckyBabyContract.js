@@ -49,7 +49,7 @@ const getPastEvent_LuckyBabyParticipate = async (
   const events = await contract.queryFilter("Participate", fromBlock, toBlock);
   // console.log(events.length);
 
-  events.map(async (event) => {
+  for (const event of events) {
     let blockNumber = event.blockNumber;
     let account = event.args.account;
     let issueId = event.args.issueId;
@@ -77,7 +77,8 @@ const getPastEvent_LuckyBabyParticipate = async (
     } else {
       console.log("Insert Login Log Failure");
     }
-  });
+  }
+  return true;
 };
 module.exports = {
   listenContract_LuckyBabyParticipate,

@@ -60,4 +60,24 @@ const insertDataOfMysql_OP = async (statementSQL) => {
   }
 };
 
-module.exports = { getDataOfMysql, getDataOfMysql_OP, insertDataOfMysql_OP };
+const insertDataOfMysql_OP_Paras = async (statementSQL, paras) => {
+  const getConnection = util.promisify(pool.getConnection).bind(pool);
+  const connection = await getConnection();
+  const query = util.promisify(connection.query).bind(connection);
+
+  try {
+    const result = await query(statementSQL, paras);
+    connection.release();
+    return result.insertId;
+  } catch (error) {
+    console.error("MySQL错误:", error);
+    return null;
+  }
+};
+
+module.exports = {
+  getDataOfMysql,
+  getDataOfMysql_OP,
+  insertDataOfMysql_OP,
+  insertDataOfMysql_OP_Paras,
+};

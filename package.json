@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "listeningEvent": "node src/listeningEvent.js"
   },
   "keywords": [],
   "author": "",

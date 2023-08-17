@@ -11,6 +11,8 @@ const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 const NFTSCAN_API_KEY = process.env.NFTSCAN_API_KEY;
 const chainIds_testnet = ["5", "97", "11155111"];
 const KNN3_API_KEY = process.env.KNN3_API_KEY;
+
+const addressLuckyBaby_G = "0x66fD5106a5Af336CE81fd38A5AB2FFFD9bCD1C8c";
 module.exports = {
   EXPIRES_TIME,
   SECRETKEY,
@@ -23,4 +25,5 @@ module.exports = {
   NFTSCAN_API_KEY,
   chainIds_testnet,
   KNN3_API_KEY,
+  addressLuckyBaby_G,
 };

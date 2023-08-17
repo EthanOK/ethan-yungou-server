@@ -85,8 +85,8 @@ module.exports = {
 };
 
 // listenContract_LuckyBabyParticipate("0x0ee08d42f1055da5c560f76ac029af9eebe5ed92");
-getPastEvent_LuckyBabyParticipate(
-  "0x66fD5106a5Af336CE81fd38A5AB2FFFD9bCD1C8c",
-  9525468,
-  null
-);
+// getPastEvent_LuckyBabyParticipate(
+//   "0x66fD5106a5Af336CE81fd38A5AB2FFFD9bCD1C8c",
+//   9525468,
+//   null
+// );

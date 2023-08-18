@@ -6,37 +6,52 @@ const provider = new JsonRpcProvider(INFURA_GOERLI_RPC);
 
 // 实时监听
 const listenContract_LuckyBabyParticipate = async (target) => {
-  const contract = new ethers.Contract(target, LuckyBabyABI, provider);
+  try {
+    const contract = new ethers.Contract(target, LuckyBabyABI, provider);
 
-  // Participate (account, issueId, count, timeParticipate)
+    // Participate (account, issueId, count, timeParticipate)
 
-  contract.on(
-    "Participate",
-    async (account, issueId, count, timeParticipate, numberCurrent, event) => {
-      let blockNumber = event.log.blockNumber;
-      const transactionHash = event.log.transactionHash;
-
-      const sql =
-        "INSERT IGNORE INTO aggregator_ethan.event_participate_lb" +
-        " (account, issueId, count, timeParticipate, blockNumber, numberCurrent, transactionHash)" +
-        " VALUES(?,?,?,?,?,?,?)";
-      let paras = [
+    contract.on(
+      "Participate",
+      async (
         account,
         issueId,
         count,
         timeParticipate,
-        blockNumber,
         numberCurrent,
-        transactionHash,
-      ];
-      let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
-      if (insertedId !== null) {
-        console.log("Insert Login Log ID:", insertedId);
-      } else {
-        console.log("Insert Login Log Failure");
+        event
+      ) => {
+        try {
+          let blockNumber = event.log.blockNumber;
+          const transactionHash = event.log.transactionHash;
+
+          const sql =
+            "INSERT IGNORE INTO aggregator_ethan.event_participate_lb" +
+            " (account, issueId, count, timeParticipate, blockNumber, numberCurrent, transactionHash)" +
+            " VALUES(?,?,?,?,?,?,?)";
+          let paras = [
+            account,
+            issueId,
+            count,
+            timeParticipate,
+            blockNumber,
+            numberCurrent,
+            transactionHash,
+          ];
+          let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
+          if (insertedId !== null) {
+            console.log("Insert Login Log ID:", insertedId);
+          } else {
+            console.log("Insert Login Log Failure");
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // 获取历史事件
@@ -80,6 +95,7 @@ const getPastEvent_LuckyBabyParticipate = async (
   }
   return true;
 };
+
 module.exports = {
   listenContract_LuckyBabyParticipate,
   getPastEvent_LuckyBabyParticipate,

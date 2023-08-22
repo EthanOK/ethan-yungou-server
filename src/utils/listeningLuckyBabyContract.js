@@ -1,7 +1,9 @@
-const { ethers, WebSocketProvider } = require("ethers");
+const { ethers, WebSocketProvider, JsonRpcProvider } = require("ethers");
 const { INFURA_GOERLI_WSS } = require("../systemConfig");
 const LuckyBabyABI = require("../abi/LuckyBabyABI.json");
 const { insertDataOfMysql_OP_Paras } = require("./accessDB");
+// WebSocketProvider: 监听合约使用 wss
+// JsonRpcProvider: 查询区块链数据、发送交易、调用智能合约 http
 const provider = new WebSocketProvider(INFURA_GOERLI_WSS);
 
 // 实时监听

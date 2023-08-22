@@ -1,8 +1,8 @@
-const { ethers, JsonRpcProvider } = require("ethers");
-const { INFURA_GOERLI_RPC } = require("../systemConfig");
+const { ethers, WebSocketProvider } = require("ethers");
+const { INFURA_GOERLI_WSS } = require("../systemConfig");
 const LuckyBabyABI = require("../abi/LuckyBabyABI.json");
 const { insertDataOfMysql_OP_Paras } = require("./accessDB");
-const provider = new JsonRpcProvider(INFURA_GOERLI_RPC);
+const provider = new WebSocketProvider(INFURA_GOERLI_WSS);
 
 // 实时监听
 const listenContract_LuckyBabyParticipate = async (target) => {

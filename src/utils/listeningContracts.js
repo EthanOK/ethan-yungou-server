@@ -9,8 +9,8 @@ const listeningContracts = async () => {
   } catch (error) {
     console.log(error);
   }
-  return true;
 };
+
 module.exports = {
   listeningContracts,
 };

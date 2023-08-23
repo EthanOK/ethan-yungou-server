@@ -6,6 +6,42 @@ const { insertDataOfMysql_OP_Paras } = require("./accessDB");
 // JsonRpcProvider: 查询区块链数据、发送交易、调用智能合约 http
 const provider = new WebSocketProvider(INFURA_GOERLI_WSS);
 
+let eventListener = async (
+  account,
+  issueId,
+  count,
+  timeParticipate,
+  numberCurrent,
+  event
+) => {
+  try {
+    let blockNumber = event.log.blockNumber;
+    const transactionHash = event.log.transactionHash;
+
+    const sql =
+      "INSERT IGNORE INTO aggregator_ethan.event_participate_lb" +
+      " (account, issueId, count, timeParticipate, blockNumber, numberCurrent, transactionHash)" +
+      " VALUES(?,?,?,?,?,?,?)";
+    let paras = [
+      account,
+      issueId,
+      count,
+      timeParticipate,
+      blockNumber,
+      numberCurrent,
+      transactionHash,
+    ];
+    let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
+    if (insertedId !== null) {
+      console.log("Insert Login Log ID:", insertedId);
+    } else {
+      console.log("Insert Login Log Failure");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // 实时监听
 const listenContract_LuckyBabyParticipate = async (target) => {
   try {
@@ -13,48 +49,25 @@ const listenContract_LuckyBabyParticipate = async (target) => {
 
     // Participate (account, issueId, count, timeParticipate)
 
-    contract.on(
-      "Participate",
-      async (
-        account,
-        issueId,
-        count,
-        timeParticipate,
-        numberCurrent,
-        event
-      ) => {
-        try {
-          let blockNumber = event.log.blockNumber;
-          const transactionHash = event.log.transactionHash;
+    contract.on("Participate", eventListener);
 
-          const sql =
-            "INSERT IGNORE INTO aggregator_ethan.event_participate_lb" +
-            " (account, issueId, count, timeParticipate, blockNumber, numberCurrent, transactionHash)" +
-            " VALUES(?,?,?,?,?,?,?)";
-          let paras = [
-            account,
-            issueId,
-            count,
-            timeParticipate,
-            blockNumber,
-            numberCurrent,
-            transactionHash,
-          ];
-          let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
-          if (insertedId !== null) {
-            console.log("Insert Login Log ID:", insertedId);
-          } else {
-            console.log("Insert Login Log Failure");
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    );
+    // setTimeout(() => {
+    //   stopEventListening(contract);
+    //   listenContract_LuckyBabyParticipate(target);
+    //   console.log("Listening restarted.");
+    // }, 5 * 60 * 1000);
   } catch (error) {
     console.log(error);
   }
 };
+
+// 停止监听
+function stopEventListening(contract) {
+  if (eventListener) {
+    contract.removeListener("Participate", eventListener);
+    console.log("Listening stopped.");
+  }
+}
 
 // 获取历史事件
 const getPastEvent_LuckyBabyParticipate = async (
@@ -67,6 +80,7 @@ const getPastEvent_LuckyBabyParticipate = async (
   // console.log(events.length);
 
   for (const event of events) {
+    lastEvent = event;
     let blockNumber = event.blockNumber;
     let account = event.args.account;
     let issueId = event.args.issueId;
@@ -95,6 +109,7 @@ const getPastEvent_LuckyBabyParticipate = async (
       console.log("Insert Login Log Failure");
     }
   }
+
   return true;
 };
 

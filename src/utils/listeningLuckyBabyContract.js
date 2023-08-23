@@ -50,12 +50,6 @@ const listenContract_LuckyBabyParticipate = async (target) => {
     // Participate (account, issueId, count, timeParticipate)
 
     contract.on("Participate", eventListener);
-
-    // setTimeout(() => {
-    //   stopEventListening(contract);
-    //   listenContract_LuckyBabyParticipate(target);
-    //   console.log("Listening restarted.");
-    // }, 5 * 60 * 1000);
   } catch (error) {
     console.log(error);
   }

@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const { listeningContracts } = require("./utils/listeningContracts");
 const { postReq } = require("./utils/postRequest");
 const app = express();
 
@@ -25,11 +25,15 @@ async function main() {
 
   // post
   await postReq(app);
+
   // 启动服务器，监听端口3001
   const PORT = 3001;
   app.listen(PORT, () => {
     console.log(`服务器已启动，监听端口：${PORT}`);
   });
+
+  // //listening Contract
+  // await listeningContracts();
 }
 
 main();

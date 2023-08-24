@@ -11,10 +11,13 @@ const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 const NFTSCAN_API_KEY = process.env.NFTSCAN_API_KEY;
 const chainIds_testnet = ["5", "97", "11155111"];
 const KNN3_API_KEY = process.env.KNN3_API_KEY;
-
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 const INFURA_GOERLI_WSS = process.env.INFURA_GOERLI_WSS;
 
+const YunGouDividend_Main = "0x4643B06deBE49fCE229A77eBC9E7c5C036b2CEdC";
+
 const addressLuckyBaby_G = "0x66fD5106a5Af336CE81fd38A5AB2FFFD9bCD1C8c";
+
 module.exports = {
   EXPIRES_TIME,
   SECRETKEY,
@@ -29,4 +32,6 @@ module.exports = {
   KNN3_API_KEY,
   addressLuckyBaby_G,
   INFURA_GOERLI_WSS,
+  ALCHEMY_API_KEY,
+  YunGouDividend_Main,
 };

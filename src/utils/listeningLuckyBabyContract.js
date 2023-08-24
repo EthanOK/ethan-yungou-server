@@ -1,10 +1,10 @@
 const { ethers, WebSocketProvider, JsonRpcProvider } = require("ethers");
-const { INFURA_GOERLI_WSS } = require("../systemConfig");
+const { INFURA_GOERLI_WSS, INFURA_GOERLI_RPC } = require("../systemConfig");
 const LuckyBabyABI = require("../abi/LuckyBabyABI.json");
 const { insertDataOfMysql_OP_Paras } = require("./accessDB");
-// WebSocketProvider: 监听合约使用 wss
+// WebSocketProvider: 监听合约使用 wss (几分钟就掉线？？)
 // JsonRpcProvider: 查询区块链数据、发送交易、调用智能合约 http
-const provider = new WebSocketProvider(INFURA_GOERLI_WSS);
+const provider = new JsonRpcProvider(INFURA_GOERLI_RPC);
 
 let eventListener = async (
   account,
@@ -54,14 +54,6 @@ const listenContract_LuckyBabyParticipate = async (target) => {
     console.log(error);
   }
 };
-
-// 停止监听
-function stopEventListening(contract) {
-  if (eventListener) {
-    contract.removeListener("Participate", eventListener);
-    console.log("Listening stopped.");
-  }
-}
 
 // 获取历史事件
 const getPastEvent_LuckyBabyParticipate = async (

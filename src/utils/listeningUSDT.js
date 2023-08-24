@@ -9,9 +9,7 @@ const {
 const usdtABI = require("../abi/USDTABI.json");
 
 async function main() {
-  const provider = new WebSocketProvider(
-    "wss://eth-goerli.g.alchemy.com/v2/83yL2qXH68vnTkzzida15zCVNGZCy1JO"
-  );
+  const provider = new JsonRpcProvider("...");
 
   // 交互合约 new ethers.Contract(addressOrName, abi, providerOrSigner);
   let usdtAddress = "0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49";

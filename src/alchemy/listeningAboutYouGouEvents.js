@@ -1,5 +1,9 @@
 const { Alchemy, Network, AlchemySubscription } = require("alchemy-sdk");
-const { ALCHEMY_API_KEY, YunGouDividend_Main } = require("../systemConfig");
+const {
+  ALCHEMY_API_KEY,
+  YunGouDividend_Main,
+  YgmeStaking_Main,
+} = require("../systemConfig");
 const { id, AbiCoder } = require("ethers");
 const { insertDataOfMysql_OP_Paras } = require("../utils/accessDB");
 
@@ -11,7 +15,7 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 async function main() {
-  /* 
+  /*  YunGouDividend
         event Withdraw(
         uint256 indexed orderId,
         address indexed coinAddress,
@@ -19,7 +23,6 @@ async function main() {
         uint256 amount
     );
      */
-
   const filter_withdraw = {
     address: YunGouDividend_Main,
     // id("Withdraw(uint256,address,address,uint256)")
@@ -27,12 +30,21 @@ async function main() {
       "0xfeb2000dca3e617cd6f3a8bbb63014bb54a124aac6ccbf73ee7229b4cd01f120",
     ],
   };
+
   const filter_USDC = {
     address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     topics: [
       "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
     ],
   };
+
+  const filter_YgmeStaking = {
+    address: YgmeStaking_Main,
+    topics: [
+      "0xe47225b875de4852fd470382456b118594ebcb4992992c55659271dcb9d05c8a",
+    ],
+  };
+
   // 实时监听 withdraw 事件
   alchemy.ws.on(filter_withdraw, async (log) => {
     try {
@@ -78,6 +90,54 @@ async function main() {
         coinAddress,
         account,
         amount,
+        blockNumber,
+        transactionHash,
+      ];
+      let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
+      if (insertedId !== null) {
+        console.log("Insert Login Log ID:", insertedId);
+      } else {
+        console.log("Insert Login Log Failure");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  // 实时监听 staking 事件
+  alchemy.ws.on(filter_YgmeStaking, async (log) => {
+    try {
+      let logDemo = log;
+      const account = AbiCoder.defaultAbiCoder()
+        .decode(["address"], logDemo.topics[1])
+        .toString();
+
+      const tokenId = AbiCoder.defaultAbiCoder()
+        .decode(["uint256"], logDemo.topics[2])
+        .toString();
+      const nftContract = AbiCoder.defaultAbiCoder()
+        .decode(["address"], logDemo.topics[3])
+        .toString();
+      const blockNumber = logDemo.blockNumber;
+      const transactionHash = logDemo.transactionHash;
+
+      let [startTime, endTime, pledgeType] = AbiCoder.defaultAbiCoder().decode(
+        ["uint256", "uint256", "uint8"],
+        logDemo.data
+      );
+
+      const sql =
+        "INSERT IGNORE INTO aggregator_ethan.event_staking_ygme " +
+        "(account, nftContract, tokenId, startTime, endTime, pledgeType, blockNumber,transactionHash) " +
+        "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
+
+      const paras = [
+        account,
+        nftContract,
+        tokenId,
+        startTime,
+        endTime,
+        pledgeType,
         blockNumber,
         transactionHash,
       ];

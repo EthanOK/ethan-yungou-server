@@ -16,6 +16,8 @@ const INFURA_GOERLI_WSS = process.env.INFURA_GOERLI_WSS;
 
 const YunGouDividend_Main = "0x4643B06deBE49fCE229A77eBC9E7c5C036b2CEdC";
 
+const YgmeStaking_Main = "0x1981f583d723bcbe7a0b41854afadf7fc287f11c";
+
 const addressLuckyBaby_G = "0x66fD5106a5Af336CE81fd38A5AB2FFFD9bCD1C8c";
 
 module.exports = {
@@ -34,4 +36,5 @@ module.exports = {
   INFURA_GOERLI_WSS,
   ALCHEMY_API_KEY,
   YunGouDividend_Main,
+  YgmeStaking_Main,
 };

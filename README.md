@@ -12,3 +12,7 @@ npm install dotenv
 npm install nftscan-api
 npm install --save opensea-js
 ```
+
+## 实时监听 合约事件
+
+推荐 `alchemy` WSS

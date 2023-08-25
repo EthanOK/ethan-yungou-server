@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "listeningEvent": "node src/listeningEvent.js",
-    "listeningYGDivEvent": "node src/alchemy/YunGouDividendEvent.js",
+    "listeningAboutYouGouEvents": "node src/alchemy/listeningAboutYouGouEvents.js",
     "updateDataBase": "node src/updateDataBase.js"
   },
   "keywords": [],

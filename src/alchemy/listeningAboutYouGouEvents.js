@@ -95,7 +95,7 @@ async function main() {
       ];
       let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
       if (insertedId !== null) {
-        console.log("Insert Login Log ID:", insertedId);
+        console.log("event_withdraw_ygdiv Insert ID:", insertedId);
       } else {
         console.log("Insert Login Log Failure");
       }
@@ -143,7 +143,7 @@ async function main() {
       ];
       let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
       if (insertedId !== null) {
-        console.log("Insert Login Log ID:", insertedId);
+        console.log("event_staking_ygme Insert ID:", insertedId);
       } else {
         console.log("Insert Login Log Failure");
       }

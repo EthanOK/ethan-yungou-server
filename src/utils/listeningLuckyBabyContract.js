@@ -55,7 +55,7 @@ const listenContract_LuckyBabyParticipate = async (target) => {
   }
 };
 
-// 获取历史事件
+// 获取Participate 历史事件
 const getPastEvent_LuckyBabyParticipate = async (
   target,
   fromBlock,

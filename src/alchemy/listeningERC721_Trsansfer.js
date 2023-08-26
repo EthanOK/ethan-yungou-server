@@ -41,7 +41,26 @@ async function LISTEN_ETH_MAINNET() {
         .toString();
 
       if (length == 4 && from != ZeroAddress && to != ZeroAddress) {
-        console.log(logDemo);
+        // console.log(logDemo);
+        const token = logDemo.address;
+        const tokenId = AbiCoder.defaultAbiCoder()
+          .decode(["uint256"], logDemo.topics[3])
+          .toString();
+        const blockNumber = logDemo.blockNumber;
+        const transactionHash = logDemo.transactionHash;
+
+        const sql =
+          "INSERT IGNORE INTO aggregator_ethan.event_transfer_erc721 " +
+          "(token, tokenId, fromAddress, toAddress, blockNumber, transactionHash)" +
+          " VALUES(?,?,?,?,?,?)";
+
+        let paras = [token, tokenId, from, to, blockNumber, transactionHash];
+        let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);
+        if (insertedId !== null) {
+          console.log("event_transfer_erc721 Insert ID:", insertedId);
+        } else {
+          console.log("Insert Login Log Failure");
+        }
       }
     } catch (error) {
       console.log(error);

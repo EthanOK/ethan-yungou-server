@@ -51,8 +51,8 @@ async function LISTEN_ETH_MAINNET() {
 
         const sql =
           "INSERT IGNORE INTO aggregator_ethan.event_transfer_erc721 " +
-          "(token, tokenId, fromAddress, toAddress, blockNumber, transactionHash)" +
-          " VALUES(?,?,?,?,?,?)";
+          "(token, tokenId, fromAddress, toAddress, blockNumber, transactionHash) " +
+          "VALUES(?,?,?,?,?,?)";
 
         let paras = [token, tokenId, from, to, blockNumber, transactionHash];
         let insertedId = await insertDataOfMysql_OP_Paras(sql, paras);

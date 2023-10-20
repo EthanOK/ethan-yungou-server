@@ -14,6 +14,11 @@ const KNN3_API_KEY = process.env.KNN3_API_KEY;
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 const INFURA_GOERLI_WSS = process.env.INFURA_GOERLI_WSS;
 
+const CC_SIGNATURE_KEY = process.env.CC_SIGNATURE_KEY;
+
+const crossChainAddress_G = "0x2817c37eB23FC4F94f1168A94f26befa1F42FF7d";
+const crossChainAddress_TBSC = "";
+
 const YunGouDividend_Main = "0x4643B06deBE49fCE229A77eBC9E7c5C036b2CEdC";
 
 const YgmeStaking_Main = "0x1981f583d723bcbe7a0b41854afadf7fc287f11c";
@@ -37,4 +42,7 @@ module.exports = {
   ALCHEMY_API_KEY,
   YunGouDividend_Main,
   YgmeStaking_Main,
+  CC_SIGNATURE_KEY,
+  crossChainAddress_G,
+  crossChainAddress_TBSC,
 };

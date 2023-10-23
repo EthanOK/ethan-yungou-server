@@ -20,6 +20,7 @@ const {
 const { getBNBPriceUSDT, getETHPriceUSDT } = require("./getPriceBaseUSDT");
 const { getSignatureOfCrossChain } = require("./getSignature");
 const { changeCrossChainDatas } = require("./changeDatas");
+const { getClaimYGIOBalance } = require("./getAccountBalance");
 
 const postReq = async (app) => {
   try {
@@ -350,6 +351,34 @@ const postReq = async (app) => {
             userAddress,
             requestData.amount,
             requestData.toChainId
+          );
+
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
+      res.json(result);
+    });
+    // getClaimYGIOBalance
+    app.post("/api/getClaimYGIOBalance", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await getClaimYGIOBalance(
+            userAddress,
+            requestData.chainId
           );
 
           if (data == false) {

@@ -19,6 +19,7 @@ const {
 
 const { getBNBPriceUSDT, getETHPriceUSDT } = require("./getPriceBaseUSDT");
 const { getSignatureOfCrossChain } = require("./getSignature");
+const { changeCrossChainDatas } = require("./changeDatas");
 
 const postReq = async (app) => {
   try {
@@ -326,6 +327,38 @@ const postReq = async (app) => {
       let data = { bnbPrice: bnbPrice, ethPrice: ethPrice };
       result = { code: 200, data: data };
 
+      res.json(result);
+    });
+
+    // changeCrossChainDatas
+    app.post("/api/changeCrossChainDatas", async (req, res) => {
+      const userToken = req.headers["user-token"];
+
+      const requestData = req.body;
+      let result;
+
+      if (userToken.length == 0) {
+        result = { code: -401, message: "unLogin, Please Login!" };
+      } else {
+        let [userAddress, message] = verifyToken(userToken);
+        if (userAddress == null) {
+          result = { code: -400, message: message };
+        } else {
+          let data = await changeCrossChainDatas(
+            requestData.chainId,
+            requestData.ccType,
+            userAddress,
+            requestData.amount,
+            requestData.toChainId
+          );
+
+          if (data == false) {
+            result = { code: -444, message: "后台访问ens,连接出错" };
+          } else {
+            result = { code: 200, data: data };
+          }
+        }
+      }
       res.json(result);
     });
   } catch (error) {

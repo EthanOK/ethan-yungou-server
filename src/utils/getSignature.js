@@ -43,8 +43,12 @@ const getSignatureOfCrossChain = async (chainId, ccType, account, amount) => {
       account,
       chainId,
     ]);
-
-    let balance = balanceData[0].balance;
+    let balance;
+    if (balanceData.length == 0) {
+      balance = 0;
+    } else {
+      balance = balanceData[0].balance;
+    }
 
     if (BigInt(balance) < BigInt(amount)) {
       return "InvalidAmount";

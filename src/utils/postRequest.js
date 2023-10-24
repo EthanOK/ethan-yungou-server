@@ -291,6 +291,8 @@ const postReq = async (app) => {
 
           if (data == false) {
             result = { code: -444, message: "后台访问ens,连接出错" };
+          } else if (data == "InvalidAmount") {
+            result = { code: -400, message: "Insufficient balance" };
           } else {
             result = { code: 200, data: data };
           }

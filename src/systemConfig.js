@@ -17,7 +17,7 @@ const INFURA_GOERLI_WSS = process.env.INFURA_GOERLI_WSS;
 const CC_SIGNATURE_KEY = process.env.CC_SIGNATURE_KEY;
 
 const crossChainAddress_G = "0x2817c37eB23FC4F94f1168A94f26befa1F42FF7d";
-const crossChainAddress_TBSC = "";
+const crossChainAddress_TBSC = "0x6AAf3B8a8E42BeDc226e2d1F166Dfdc22d4b5182";
 
 const YunGouDividend_Main = "0x4643B06deBE49fCE229A77eBC9E7c5C036b2CEdC";
 

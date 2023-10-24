@@ -10,7 +10,7 @@ const getClaimYGIOBalance = async (account, chainId) => {
     chainId,
   ]);
 
-  console.log(balanceData);
+  //   console.log(balanceData);
 
   if (balanceData.length == 0) {
     return { balance: 0 };

@@ -4,6 +4,7 @@ const {
   crossChainAddress_TBSC,
 } = require("../systemConfig");
 const { ethers, AbiCoder } = require("ethers");
+const { getDataOfMysql_OP_Paras } = require("./accessDB");
 
 const getSignatureOfCrossChain = async (chainId, ccType, account, amount) => {
   let privateKey = CC_SIGNATURE_KEY;
@@ -31,6 +32,24 @@ const getSignatureOfCrossChain = async (chainId, ccType, account, amount) => {
   const type = ["address", "uint8", "uint256", "address", "uint256", "uint256"];
 
   const args = [ccAddress, ccType, orderId, account, amount, deadline];
+
+  if (ccType == 1 || Number(ccType) == 1) {
+    // amount <= db amount
+    let sql_balance =
+      "SELECT balance FROM aggregator_ethan.cross_chain_user" +
+      " WHERE account = ? AND chainId = ?";
+
+    let balanceData = await getDataOfMysql_OP_Paras(sql_balance, [
+      account,
+      chainId,
+    ]);
+
+    let balance = balanceData[0].balance;
+
+    if (BigInt(balance) < BigInt(amount)) {
+      return "InvalidAmount";
+    }
+  }
 
   const encodedData = AbiCoder.defaultAbiCoder().encode(type, args);
 

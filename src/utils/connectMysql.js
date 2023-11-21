@@ -4,7 +4,9 @@ const getPoolMysql = () => {
   try {
     let pool = mysql.createPool({
       connectionLimit: 10,
-      host: "192.168.0.173",
+      // TODO:change host address
+      // host: "192.168.0.173",
+      host: "localhost",
       user: "root",
       password: "root",
       port: "3306",

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
+    "build": "node src/server.js",
     "listeningEvent": "node src/listeningEvent.js",
     "listeningERC721TrsansferEvent": "node src/alchemy/listeningERC721_Trsansfer.js",
     "listeningAboutYouGouEvents": "node src/alchemy/listeningAboutYouGouEvents.js",

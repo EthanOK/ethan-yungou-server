@@ -63,16 +63,17 @@ const postReq = async (app) => {
         const chainId = requestData.domainData.chainId;
         const create_time = Math.round(new Date().getTime() / 1000);
 
-        const sql = `INSERT INTO aggregator_ethan.yg_user_token 
-        (user_address, user_token, deleted, create_time, update_time,chain_id)
-         VALUES("${user_address}", "${userToken}", 0, ${create_time}, ${create_time}, ${chainId});`;
+        // TODO:插入数据库
+        // const sql = `INSERT INTO aggregator_ethan.yg_user_token
+        // (user_address, user_token, deleted, create_time, update_time,chain_id)
+        //  VALUES("${user_address}", "${userToken}", 0, ${create_time}, ${create_time}, ${chainId});`;
 
-        let insertedId = await insertDataOfMysql_OP(sql);
-        if (insertedId !== null) {
-          console.log("Insert Login Log ID:", insertedId);
-        } else {
-          console.log("Insert Login Log Failure");
-        }
+        // let insertedId = await insertDataOfMysql_OP(sql);
+        // if (insertedId !== null) {
+        //   console.log("Insert Login Log ID:", insertedId);
+        // } else {
+        //   console.log("Insert Login Log Failure");
+        // }
       }
 
       res.json(result);
